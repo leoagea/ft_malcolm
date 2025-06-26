@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:34:03 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 16:40:09 by lagea            ###   ########.fr       */
+/*   Updated: 2025/06/26 18:54:12 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,64 @@
 
 t_data	*g_data = NULL;
 
-int main(int argc, char **argv)
+static void signal_handler(int sig)
 {
-	(void)argc;
-	(void)argv;
+	if (sig == SIGINT || sig == SIGTERM)
+	{
+		if (g_data)
+			free_data(g_data);
+		_(STDOUT_FILENO, "Exiting...\n");
+		exit(EXIT_SUCCESS);
+	}
+}
+
+static void init_signals(void)
+{
+	size_t len = 0;
+	char buf[BUF_SIZE] = {0};
+	struct sigaction sa;
+
+	sa.sa_handler = signal_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+
+	if (sigaction(SIGINT, &sa, NULL) == -1)
+		len = snprintf(buf, BUF_SIZE,"sigaction: %s\n",strerror(errno));
+	if (sigaction(SIGTERM, &sa, NULL) == -1)
+		len += snprintf(buf + len , BUF_SIZE - len,"sigaction: %s\n",strerror(errno));
+	if (len > 0)
+		exit_error(buf);
+}
+
+int main(int ac, char **av)
+{
+	(void)av;
+	(void)ac;
+	// Commented out the usage check for now, for testing purposes.
+	// if (ac < 5)
+	// 	return (usage(), EXIT_SUCCESS);
+	
+	if (getuid() != 0)
+		exit_error("ft_malcolm: This program must be run as root to enable SOCK_RAW creation.\n");
 
 	g_data = ft_calloc(sizeof(t_data), 1);
 	if (!g_data)
 		return (EXIT_FAILURE);
 
-
+	// For testing wihtout command line arguments
+	char *source_ip = "10.0.2.15";
+	char *source_mask = "255.255.255.0";
+	g_data->source.iip = inet_addr(source_ip);
+	g_data->source.imask = inet_addr(source_mask);
+	strcpy(g_data->source.ip, source_ip);
+	strcpy(g_data->source.mask, source_mask);
+	printf("Source IP: %s, Mask: %s\n", g_data->source.ip, g_data->source.mask);
+	printf("Source IP (int): %d, Mask (int): %d\n", g_data->source.iip, g_data->source.imask);
+	
+	init_signals();
+	if (init_socket(g_data) == -1 || get_bind_interface(g_data) == -1)
+		return (free_data(g_data), EXIT_FAILURE);
+	
 	free_data(g_data);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:29:54 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 16:38:21 by lagea            ###   ########.fr       */
+/*   Updated: 2025/06/26 19:03:49 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,19 @@
 #include "../libft/libft.h"
 #include "struct.h"
 
+#include <stdbool.h>			// bool type
+#include <signal.h>				// sigaction
+#include <sys/socket.h>			// socket
+#include <netinet/ip.h>			// IPPROTO_TCP, IP_HDRINCL
+#include <ifaddrs.h>			// getifaddrs
+#include <net/if.h>				// IFF_UP, IFF_LOOPBACK
+#include <arpa/inet.h>			// inet_ntoa, inet_ntop  ???TODO: remote unauthorized includes
+
 /*#############################################################################
 # Define Variables
 #############################################################################*/
 
+#define BUF_SIZE 2048
 #define _(fd, msg)			  write(fd, msg, ft_strlen(msg));
 
 /*#############################################################################
@@ -35,6 +44,20 @@
 #############################################################################*/
 
 extern t_data		   *g_data;
+
+/*#############################################################################
+# Init.c
+#############################################################################*/
+
+ssize_t init_socket(t_data *data);
+ssize_t get_bind_interface(t_data *data);
+/*#############################################################################
+# Utils.c
+#############################################################################*/
+
+void usage(void);
+void exit_error(const char *msg);
+void print_errno(const char *func_name);
 
 /*#############################################################################
 # Free.c

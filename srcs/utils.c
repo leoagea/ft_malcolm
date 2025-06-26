@@ -1,37 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/26 16:36:00 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 18:10:58 by lagea            ###   ########.fr       */
+/*   Created: 2025/06/26 16:56:55 by lagea             #+#    #+#             */
+/*   Updated: 2025/06/26 18:07:41 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_malcolm.h"
 
-static void free_pointer(void **ptr)
+void usage()
 {
-	if (ptr && *ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
+	char buf[BUF_SIZE];
+
+	snprintf(buf, BUF_SIZE, "Usage: ./ft_malcolm [source ip] [source mac address] [destination ip] [destination mac address]\n");
+	_(STDOUT_FILENO, buf);
 }
 
-void	free_data(t_data *data)
+void exit_error(const char *msg)
 {
-	if (!data)
-		return ;
-	
-	if (g_data->sockfd > 0){
-		if (close(g_data->sockfd) < 0)
-			print_errno("close");
-		g_data->sockfd = -1;
-	}
+	_(STDERR_FILENO, msg);
+	exit(EXIT_FAILURE);
+}
 
-	free_pointer((void **)&data);
-	data = NULL;
+void print_errno(const char *func_name)
+{
+	char buf[BUF_SIZE];
+	snprintf(buf, BUF_SIZE, "%s: %s\n", func_name, strerror(errno));
+	_(STDERR_FILENO, buf);
 }
