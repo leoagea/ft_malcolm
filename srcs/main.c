@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:34:03 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 18:54:12 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/01 14:04:50 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,12 @@ int main(int ac, char **av)
 	g_data = ft_calloc(sizeof(t_data), 1);
 	if (!g_data)
 		return (EXIT_FAILURE);
-
-	// For testing wihtout command line arguments
-	char *source_ip = "10.0.2.15";
-	char *source_mask = "255.255.255.0";
-	g_data->source.iip = inet_addr(source_ip);
-	g_data->source.imask = inet_addr(source_mask);
-	strcpy(g_data->source.ip, source_ip);
-	strcpy(g_data->source.mask, source_mask);
-	printf("Source IP: %s, Mask: %s\n", g_data->source.ip, g_data->source.mask);
-	printf("Source IP (int): %d, Mask (int): %d\n", g_data->source.iip, g_data->source.imask);
 	
 	init_signals();
+
+	if (parse_arg(ac, av, g_data) == -1)
+		return (free_data(g_data), EXIT_FAILURE);
+
 	if (init_socket(g_data) == -1 || get_bind_interface(g_data) == -1)
 		return (free_data(g_data), EXIT_FAILURE);
 	

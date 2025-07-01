@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:56:55 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 18:07:41 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/01 13:48:59 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,12 @@ void print_errno(const char *func_name)
 {
 	char buf[BUF_SIZE];
 	snprintf(buf, BUF_SIZE, "%s: %s\n", func_name, strerror(errno));
+	_(STDERR_FILENO, buf);
+}
+
+void print_gai_error(int status)
+{
+	char buf[BUF_SIZE];
+	snprintf(buf, BUF_SIZE, "getaddrinfo: %s\n", gai_strerror(status));
 	_(STDERR_FILENO, buf);
 }

@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:29:54 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 19:03:49 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/01 14:03:07 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #include <ifaddrs.h>			// getifaddrs
 #include <net/if.h>				// IFF_UP, IFF_LOOPBACK
 #include <arpa/inet.h>			// inet_ntoa, inet_ntop  ???TODO: remote unauthorized includes
+#include <netdb.h>				// getaddrinfo
+#include <sys/types.h>			// ssize_t
 
 /*#############################################################################
 # Define Variables
@@ -51,6 +53,13 @@ extern t_data		   *g_data;
 
 ssize_t init_socket(t_data *data);
 ssize_t get_bind_interface(t_data *data);
+
+/*#############################################################################
+# Parse.c
+#############################################################################*/
+
+ssize_t parse_arg(int ac, char **av, t_data *data);
+
 /*#############################################################################
 # Utils.c
 #############################################################################*/
@@ -58,11 +67,18 @@ ssize_t get_bind_interface(t_data *data);
 void usage(void);
 void exit_error(const char *msg);
 void print_errno(const char *func_name);
+void print_gai_error(int status);
 
 /*#############################################################################
 # Free.c
 #############################################################################*/
 
 void	free_data(t_data *data);
+
+/*#############################################################################
+# Debug.c
+#############################################################################*/
+
+void debug_print_source_dest_ip(t_data *data);
 
 #endif

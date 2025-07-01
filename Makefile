@@ -105,6 +105,13 @@ help:
 ###############################################################################
 # Tests Rules
 ###############################################################################
+source_ip = "$(shell hostname -I | awk '{print $$1}')"
+source_mask = "255.255.255.0"
+destination_ip = "10.0.2.19"
+destination_mask = "255.255.254.255"
+
+test: all
+	./$(TARGET) $(source_ip) $(source_mask) $(destination_ip) $(destination_mask)
 
 ###############################################################################
 # Dependency Handling

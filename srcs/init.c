@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 17:34:42 by lagea             #+#    #+#             */
-/*   Updated: 2025/06/26 19:05:17 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/01 13:36:58 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ ssize_t get_bind_interface(t_data *data)
 		mask = ((struct sockaddr_in *)ifa->ifa_netmask)->sin_addr.s_addr;
 		
 		if (mask == 0 || mask == 0xFFFFFFFF)
-		continue;
+			continue;
 		
 		if (first){
 			first_ifa = ifa;
