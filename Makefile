@@ -10,7 +10,7 @@ NC     := \033[0m
 # Compiler & Flags
 ###############################################################################
 CC       = gcc
-CFLAGS   = -Wall -Wextra -Werror -O2 -MMD -MP #-g -fsanitize=address
+CFLAGS   = -Wall -Wextra -Werror -O2 -MMD -MP -g -fsanitize=address
 LDFLAGS  = -lm 
 # -MMD and -MP tell the compiler to generate .d (dependency) files for each .c
 
@@ -106,12 +106,13 @@ help:
 # Tests Rules
 ###############################################################################
 source_ip = "$(shell hostname -I | awk '{print $$1}')"
-source_mask = "255.255.255.0"
+interface = "$(shell ip route | awk '/default/ {print $$5}')"
+source_mac = "$(shell cat /sys/class/net/$(interface)/address)"
 destination_ip = "10.0.2.19"
-destination_mask = "255.255.254.255"
+destination_mac = "09:00:00:FF:00:D0"
 
 test: all
-	./$(TARGET) $(source_ip) $(source_mask) $(destination_ip) $(destination_mask)
+	./$(TARGET) $(source_ip) $(source_mac) $(destination_ip) $(destination_mac)
 
 ###############################################################################
 # Dependency Handling

@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:34:03 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/01 14:04:50 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/08 18:00:25 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,14 @@ int main(int ac, char **av)
 	
 	init_signals();
 
-	if (parse_arg(ac, av, g_data) == -1)
+	if (parse_arg(av, g_data) == -1)
 		return (free_data(g_data), EXIT_FAILURE);
 
 	if (init_socket(g_data) == -1 || get_bind_interface(g_data) == -1)
 		return (free_data(g_data), EXIT_FAILURE);
 	
+	build_arp_packet(g_data);
+
 	free_data(g_data);
 	return (EXIT_SUCCESS);
 }

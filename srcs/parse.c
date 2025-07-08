@@ -6,30 +6,26 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:13:14 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/01 14:11:44 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/08 17:38:57 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_malcolm.h"
 
-static bool is_valid_mask(const char *mask)
+static bool is_valid_mac_address(const char *mac)
 {
-	char *buf = mask;
-	int prev_oct = 0;
+	if (ft_strlen(mac) != MAC_ADD_STR_LEN - 1)
+		return false;
 
-	while (ft_strchr(mask, '.'))
+	for (size_t i = 0; i < MAC_ADD_STR_LEN - 1; i++)
 	{
-		char *next_dot = ft_strchr(mask, '.');
-		if (next_dot == NULL)
+		if ((i + 1) % 3 == 0)
+		{
+			if (mac[i] != ':')
+				return false;
+		}
+		else if (!ft_isxdigit(mac[i]))
 			return false;
-
-		*next_dot = '\0';
-		int octet = ft_atoi(mask);
-		if (octet < 0 || octet > 255 || octet < prev_oct)
-			return false;
-		prev_oct = octet;
-
-		mask = next_dot + 1;
 	}
 
 	return true;
@@ -37,19 +33,20 @@ static bool is_valid_mask(const char *mask)
 
 static bool is_valid_ip4(const char *ip)
 {
-	char *buf = ip;
-	while (ft_strchr(ip, '.'))
+	const char *buf = ip;
+
+	while (ft_strchr(buf, '.'))
 	{
-		char *next_dot = ft_strchr(ip, '.');
+		char *next_dot = ft_strchr(buf, '.');
 		if (next_dot == NULL)
 			return false;
 
 		*next_dot = '\0';
-		int octet = ft_atoi(ip);
+		int octet = ft_atoi(buf);
 		if (octet < 0 || octet > 255)
 			return false;
 
-		ip = next_dot + 1;
+		buf = next_dot + 1;
 	}
 
 	return true;
@@ -78,23 +75,32 @@ static bool check_ip(const char *ip)
 			return is_valid_ip4(ip);
 		}
 	}
-
+	freeaddrinfo(res);
+	return false;
 }
 
-ssize_t parse_arg(int ac, char **av, t_data *data)
+ssize_t parse_arg(char **av, t_data *data)
 {
+	if (!av[1] || !av[2] || !av[3] || !av[4])
+		return -1;
+
 	ft_strlcpy(data->source.ip, av[1], INET_ADDRSTRLEN);
-	ft_strlcpy(data->source.mask, av[2], INET_ADDRSTRLEN);
+	ft_strlcpy(data->source.mac, av[2], MAC_ADD_STR_LEN);
 
 	ft_strlcpy(data->destination.ip, av[3], INET_ADDRSTRLEN);
-	ft_strlcpy(data->destination.mask, av[4], INET_ADDRSTRLEN);
+	ft_strlcpy(data->destination.mac, av[4], MAC_ADD_STR_LEN);
 	
 	debug_print_source_dest_ip(data);
-	
-	if (!check_ip(data->source.ip) || !check_ip(data->destination.ip))
+
+	if (!check_ip(data->source.ip) || !check_ip(data->destination.ip)){
+		debug_print("Invalid IP address format.");
 		return -1;
-	if (!is_valid_mask(data->source.mask) || !is_valid_mask(data->destination.mask))
+	}
+
+	if (!is_valid_mac_address(data->source.mac) || !is_valid_mac_address(data->destination.mac)){
+		debug_print("Invalid MAC address format.");
 		return -1;
+	}
 
 	return EXIT_SUCCESS;
 }
