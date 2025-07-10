@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:29:54 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/08 18:00:12 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/09 15:51:04 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,21 @@
 #include <sys/socket.h>			// socket
 #include <netinet/ip.h>			// IPPROTO_TCP, IP_HDRINCL
 #include <ifaddrs.h>			// getifaddrs
-#include <net/if.h>				// IFF_UP, IFF_LOOPBACK
+#include <net/if.h>				// IFF_UP, IFF_LOOPBACK. if_nametoindex
 #include <arpa/inet.h>			// inet_ntoa, inet_ntop  ???TODO: remote unauthorized includes
 #include <netdb.h>				// getaddrinfo
 #include <sys/types.h>			// ssize_t
+#include <net/if_arp.h>			// ARP protocol definitions
+#include <linux/if_packet.h>	// sockaddr_ll
+#include <linux/if_ether.h>		// ETH_P_ARP
 
 /*#############################################################################
 # Define Variables
 #############################################################################*/
 
 #define BUF_SIZE 2048
-#define BASE16 "0123456789ABCDEF"
+#define ARPOP_REQUEST 1
+#define ARPOP_REPLY 2
 #define _(fd, msg)			  write(fd, msg, ft_strlen(msg));
 
 /*#############################################################################
@@ -65,7 +69,7 @@ ssize_t parse_arg(char **av, t_data *data);
 # Request.c
 #############################################################################*/
 
-void build_arp_packet(t_data *data);
+void listen_arp_request(t_data *data);
 
 /*#############################################################################
 # Utils.c

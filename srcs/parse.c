@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:13:14 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/08 17:38:57 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/08 18:30:13 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,22 @@ static bool is_valid_ip4(const char *ip)
 	while (ft_strchr(buf, '.'))
 	{
 		char *next_dot = ft_strchr(buf, '.');
-		if (next_dot == NULL)
+		if (next_dot == NULL){
+			free((void *)ip);
 			return false;
+		}
 
 		*next_dot = '\0';
 		int octet = ft_atoi(buf);
-		if (octet < 0 || octet > 255)
+		if (octet < 0 || octet > 255){
+			free((void *)ip);
 			return false;
+		}
 
 		buf = next_dot + 1;
 	}
 
+	free((void *)ip);
 	return true;
 }
 
@@ -65,6 +70,7 @@ static bool check_ip(const char *ip)
 	status = getaddrinfo(ip, NULL, &hints, &res);
 	if (status != 0){
 		print_gai_error(status);
+		free((void *)ip);
 		return false;
 	}
 
@@ -76,6 +82,7 @@ static bool check_ip(const char *ip)
 		}
 	}
 	freeaddrinfo(res);
+	free((void *)ip);
 	return false;
 }
 
@@ -90,17 +97,22 @@ ssize_t parse_arg(char **av, t_data *data)
 	ft_strlcpy(data->destination.ip, av[3], INET_ADDRSTRLEN);
 	ft_strlcpy(data->destination.mac, av[4], MAC_ADD_STR_LEN);
 	
-	debug_print_source_dest_ip(data);
-
-	if (!check_ip(data->source.ip) || !check_ip(data->destination.ip)){
+	if (!check_ip(ft_strdup(data->source.ip)) || !check_ip(ft_strdup(data->destination.ip))){
 		debug_print("Invalid IP address format.");
 		return -1;
 	}
-
+	
 	if (!is_valid_mac_address(data->source.mac) || !is_valid_mac_address(data->destination.mac)){
 		debug_print("Invalid MAC address format.");
 		return -1;
 	}
+	
+	if (inet_pton(AF_INET, data->source.ip, &data->source.iip) < 0 || inet_pton(AF_INET, data->destination.ip, &data->destination.iip) < 0){
+		print_errno("inet_pton");
+		return -1;
+	}
+	
+	debug_print_source_dest_ip(data);
 
 	return EXIT_SUCCESS;
 }

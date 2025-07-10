@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 17:34:42 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/01 13:36:58 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/09 15:21:58 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 ssize_t init_socket(t_data *data)
 {	
-	data->sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
+	data->sockfd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
 	if (data->sockfd < 0)
 		return (print_errno("socket"), -1);
 	
-	int optval = 1;
-	if (setsockopt(data->sockfd, IPPROTO_IP, IP_HDRINCL, &optval, sizeof(optval)) < 0)
+	if (setsockopt(data->sockfd, SOL_SOCKET, SO_BINDTODEVICE, data->ifaddr->ifa_name, ft_strlen(data->ifaddr->ifa_name)) < 0)
 		return (print_errno("setsockopt"), -1);
-	
+
 	return EXIT_SUCCESS;
 }
 
@@ -60,12 +59,22 @@ ssize_t get_bind_interface(t_data *data)
 	if (ifa == NULL){
 		_(STDERR_FILENO, "[Warning] No suitable interface found in the subnet of the machine.\n");
 		data->ifaddr = first_ifa;
-		freeifaddrs(ifaddr);
+		if ((data->ifindex = if_nametoindex(data->ifaddr->ifa_name)) == 0){
+			print_errno("if_nametoindex");
+			freeifaddrs(ifaddr);
+			return -1;
+		}
+		data->ifaddr_tmp = ifaddr;
 		return EXIT_SUCCESS;
 	}
 
 	data->ifaddr = ifa;
-	freeifaddrs(ifaddr);
+	data->ifaddr_tmp = ifaddr;
+
+	if ((data->ifindex = if_nametoindex(data->ifaddr->ifa_name)) == 0){
+		print_errno("if_nametoindex");
+		return -1;
+	}
 	
 	return EXIT_SUCCESS;
 }
