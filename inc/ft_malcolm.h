@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:29:54 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/09 15:51:04 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/10 16:36:21 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 #define BUF_SIZE 2048
 #define ARPOP_REQUEST 1
 #define ARPOP_REPLY 2
-#define _(fd, msg)			  write(fd, msg, ft_strlen(msg));
+#define _(fd, msg)			  do { ssize_t __unused_result = write(fd, msg, ft_strlen(msg)); (void)__unused_result; } while(0)
 
 /*#############################################################################
 # Typedef Variables
