@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:13:14 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/08 18:30:13 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/11 16:15:13 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ ssize_t parse_arg(char **av, t_data *data)
 		return -1;
 	}
 	
-	debug_print_source_dest_ip(data);
+	// debug_print_source_dest_ip(data);
 
 	return EXIT_SUCCESS;
 }

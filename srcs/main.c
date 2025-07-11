@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:34:03 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/09 15:51:10 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/11 17:11:07 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,8 @@ static void init_signals(void)
 
 int main(int ac, char **av)
 {
-	(void)av;
-	(void)ac;
-	// Commented out the usage check for now, for testing purposes.
-	// if (ac < 5)
-	// 	return (usage(), EXIT_SUCCESS);
+	if (ac < 5)
+		return (usage(), EXIT_SUCCESS);
 	
 	if (getuid() != 0)
 		exit_error("ft_malcolm: This program must be run as root to enable SOCK_RAW creation.\n");

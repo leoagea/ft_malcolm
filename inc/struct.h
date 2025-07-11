@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:33:13 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/09 15:50:33 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/11 17:10:46 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <netinet/in.h>			// INET_ADDRSTRLEN
 #include <linux/if_ether.h>		// ETH_ALEN
+#include <stdbool.h>			// bool type
 
 typedef int socketfd;
 typedef struct ifaddrs net_int;
@@ -60,6 +61,8 @@ typedef struct
 
 typedef struct 
 {
+	bool running;
+
 	t_host source;
 	t_host destination;
 	

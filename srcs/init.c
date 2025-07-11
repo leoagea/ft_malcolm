@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 17:34:42 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/09 15:21:58 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/11 16:18:58 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ ssize_t get_bind_interface(t_data *data)
 	struct ifaddrs *ifaddr, *ifa, *first_ifa = NULL;
 	uint32_t ip, mask;
 	bool first = true;
+	char buf[BUFFER_SIZE] = {0};
 	
 	if (getifaddrs(&ifaddr) == -1)
 		return (print_errno("getifaddrs"), -1);
@@ -56,21 +57,15 @@ ssize_t get_bind_interface(t_data *data)
 			break;
 	}
 
-	if (ifa == NULL){
-		_(STDERR_FILENO, "[Warning] No suitable interface found in the subnet of the machine.\n");
+	if (ifa == NULL)
 		data->ifaddr = first_ifa;
-		if ((data->ifindex = if_nametoindex(data->ifaddr->ifa_name)) == 0){
-			print_errno("if_nametoindex");
-			freeifaddrs(ifaddr);
-			return -1;
-		}
-		data->ifaddr_tmp = ifaddr;
-		return EXIT_SUCCESS;
-	}
+	else
+		data->ifaddr = ifa;
 
-	data->ifaddr = ifa;
 	data->ifaddr_tmp = ifaddr;
-
+	snprintf(buf, BUFFER_SIZE, "Using interface: %s\n", data->ifaddr->ifa_name);
+	_(STDOUT_FILENO, buf);
+	
 	if ((data->ifindex = if_nametoindex(data->ifaddr->ifa_name)) == 0){
 		print_errno("if_nametoindex");
 		return -1;
