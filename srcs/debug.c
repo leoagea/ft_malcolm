@@ -6,11 +6,12 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 14:02:19 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/08 17:50:26 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/14 11:30:09 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_malcolm.h"
+#include <stdio.h>
 
 void debug_print_source_dest_ip(t_data *data)
 {

@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:13:14 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/11 16:15:13 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/14 11:09:34 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ static bool is_valid_mac_address(const char *mac)
 		if ((i + 1) % 3 == 0)
 		{
 			if (mac[i] != ':')
-				return false;
+				return print_mac_addr_error(mac) ,false;
 		}
 		else if (!ft_isxdigit(mac[i]))
-			return false;
+			return print_mac_addr_error(mac) ,false;
 	}
 
 	return true;
@@ -69,7 +69,7 @@ static bool check_ip(const char *ip)
 	
 	status = getaddrinfo(ip, NULL, &hints, &res);
 	if (status != 0){
-		print_gai_error(status);
+		print_gai_error(ip, status);
 		free((void *)ip);
 		return false;
 	}
@@ -97,22 +97,16 @@ ssize_t parse_arg(char **av, t_data *data)
 	ft_strlcpy(data->destination.ip, av[3], INET_ADDRSTRLEN);
 	ft_strlcpy(data->destination.mac, av[4], MAC_ADD_STR_LEN);
 	
-	if (!check_ip(ft_strdup(data->source.ip)) || !check_ip(ft_strdup(data->destination.ip))){
-		debug_print("Invalid IP address format.");
+	if (!check_ip(ft_strdup(data->source.ip)) || !check_ip(ft_strdup(data->destination.ip)))
 		return -1;
-	}
 	
-	if (!is_valid_mac_address(data->source.mac) || !is_valid_mac_address(data->destination.mac)){
-		debug_print("Invalid MAC address format.");
+	if (!is_valid_mac_address(data->source.mac) || !is_valid_mac_address(data->destination.mac))
 		return -1;
-	}
 	
 	if (inet_pton(AF_INET, data->source.ip, &data->source.iip) < 0 || inet_pton(AF_INET, data->destination.ip, &data->destination.iip) < 0){
 		print_errno("inet_pton");
 		return -1;
 	}
-	
-	// debug_print_source_dest_ip(data);
 
 	return EXIT_SUCCESS;
 }

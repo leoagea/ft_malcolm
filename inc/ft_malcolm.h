@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:29:54 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/10 16:36:21 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/14 11:37:44 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,14 @@
 # Includes
 #############################################################################*/
 
-#include "../libft/libft.h"
 #include "struct.h"
 
+#include <unistd.h>				// write, close
+#include <stdlib.h>				// free, close
 #include <stdbool.h>			// bool type
+#include <stdio.h>				// snprintf
+#include <errno.h>				// errno, strerror
+#include <string.h>				// strerror
 #include <signal.h>				// sigaction
 #include <sys/socket.h>			// socket
 #include <netinet/ip.h>			// IPPROTO_TCP, IP_HDRINCL
@@ -78,7 +82,26 @@ void listen_arp_request(t_data *data);
 void usage(void);
 void exit_error(const char *msg);
 void print_errno(const char *func_name);
-void print_gai_error(int status);
+void print_gai_error(const char *ip, int status);
+void print_mac_addr_error(const char *mac);
+
+/*#############################################################################
+# Helper.c
+#############################################################################*/
+
+int		ft_atoi_base(char *str, char *base);
+int		ft_isdigit(int c);
+int		ft_atoi(const char *str);
+int		ft_isxdigit(int c);
+void	ft_bzero(void *str, size_t n);
+void	*ft_memcpy(void *dst, const void *src, size_t n);
+void	*ft_memset(void *str, int c, size_t n);
+void	*ft_calloc(size_t count, size_t size);
+size_t	ft_strlen(const char *s);
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+char	*ft_strdup(const char *s1);
+char	*ft_strchr(const char *str, int c);
+
 
 /*#############################################################################
 # Free.c

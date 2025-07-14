@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 16:56:55 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/11 16:21:09 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/14 11:04:49 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,16 @@ void print_errno(const char *func_name)
 	_(STDERR_FILENO, buf);
 }
 
-void print_gai_error(int status)
+void print_gai_error(const char *ip, int status)
 {
 	char buf[BUF_SIZE];
-	snprintf(buf, BUF_SIZE, "getaddrinfo: %s\n", gai_strerror(status));
+	snprintf(buf, BUF_SIZE, "ft_malcolm: %s: (%s)\n", gai_strerror(status), ip);
+	_(STDERR_FILENO, buf);
+}
+
+void print_mac_addr_error(const char *mac)
+{
+	char buf[BUF_SIZE];
+	snprintf(buf, BUF_SIZE, "ft_malcolm: Invalid mac address : (%s)\n", mac);
 	_(STDERR_FILENO, buf);
 }

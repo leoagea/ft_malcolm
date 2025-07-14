@@ -6,7 +6,7 @@
 /*   By: lagea < lagea@student.s19.be >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 17:34:42 by lagea             #+#    #+#             */
-/*   Updated: 2025/07/11 16:18:58 by lagea            ###   ########.fr       */
+/*   Updated: 2025/07/14 11:38:35 by lagea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ ssize_t get_bind_interface(t_data *data)
 	struct ifaddrs *ifaddr, *ifa, *first_ifa = NULL;
 	uint32_t ip, mask;
 	bool first = true;
-	char buf[BUFFER_SIZE] = {0};
+	char buf[BUF_SIZE] = {0};
 	
 	if (getifaddrs(&ifaddr) == -1)
 		return (print_errno("getifaddrs"), -1);
@@ -63,7 +63,7 @@ ssize_t get_bind_interface(t_data *data)
 		data->ifaddr = ifa;
 
 	data->ifaddr_tmp = ifaddr;
-	snprintf(buf, BUFFER_SIZE, "Using interface: %s\n", data->ifaddr->ifa_name);
+	snprintf(buf, BUF_SIZE, "Using interface: %s\n", data->ifaddr->ifa_name);
 	_(STDOUT_FILENO, buf);
 	
 	if ((data->ifindex = if_nametoindex(data->ifaddr->ifa_name)) == 0){

@@ -14,9 +14,6 @@ CFLAGS   = -Wall -Wextra -Werror -O2 -MMD -MP -g -fsanitize=address
 LDFLAGS  = -lm 
 # -MMD and -MP tell the compiler to generate .d (dependency) files for each .c
 
-DEBUG_FLAGS   := -g -fsanitize=address
-BUILD_MODE_FILE = $(OBJ_DIR)/.build_mode
-
 ###############################################################################
 # Project Settings
 ###############################################################################
@@ -24,11 +21,6 @@ TARGET   = ft_malcolm
 SRC_DIR  = srcs
 INC_DIR  = inc
 OBJ_DIR  = build
-
-# Libft info
-LIBFT_DIR = libft
-LIBFT_LIB = lib
-LIBFT     = $(LIBFT_DIR)/$(LIBFT_LIB)/libft.a
 
 ###############################################################################
 # Sources / Objects
@@ -49,7 +41,7 @@ all: $(TARGET)
 ###############################################################################
 # Linking
 ###############################################################################
-$(TARGET): $(LIBFT) $(OBJS)
+$(TARGET): $(OBJS)
 	@echo "$(BLUE)Linking $(TARGET)...$(NC)"
 	@$(CC) $(CFLAGS) -I$(INC_DIR) -o $@ $(OBJS) $(LIBFT) $(LDFLAGS)
 	@echo "$(GREEN)Build complete!$(NC)"
@@ -63,56 +55,26 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
 ###############################################################################
-# Libft
-###############################################################################
-$(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
-
-###############################################################################
 # Cleanup
 ###############################################################################
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
-	rm -f $(OBJS) $(DEPS) $(BUILD_MODE_FILE)
+	rm -f $(OBJS) $(DEPS)
 
 fclean: clean
-	rm -f $(TARGET)
 	rm -rf $(OBJ_DIR)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	rm -f $(TARGET)
 
 re: fclean all
 
 ###############################################################################
 # Others Rules
 ###############################################################################
-debug: CFLAGS := $(DEBUG_FLAGS)
-debug:
-	@if [ ! -f $(BUILD_MODE_FILE) ] || [ "$$(cat $(BUILD_MODE_FILE))" != "debug" ]; then \
-		$(MAKE) fclean; \
-		mkdir -p $(OBJ_DIR); \
-		echo "debug" > $(BUILD_MODE_FILE); \
-	fi
-	@$(MAKE) all
-
 help:
 	@echo "Available targets:"
 	@echo "  all      : Build $(TARGET)"
-	@echo "  debug    : Build with debug flags"
 	@echo "  clean    : Remove object files"
 	@echo "  fclean   : Remove all generated files"
 	@echo "  re       : Rebuild everything"
-
-###############################################################################
-# Tests Rules
-###############################################################################
-source_ip = "$(shell hostname -I | awk '{print $$1}')"
-interface = "$(shell ip route | awk '/default/ {print $$5}')"
-source_mac = "$(shell cat /sys/class/net/$(interface)/address)"
-destination_ip = "10.0.2.19"
-destination_mac = "09:00:00:FF:00:D0"
-
-test: all
-	./$(TARGET) $(source_ip) $(source_mac) $(destination_ip) $(destination_mac)
 
 ###############################################################################
 # Dependency Handling
